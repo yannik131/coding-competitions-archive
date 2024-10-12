@@ -6,7 +6,6 @@ def check(solve, subtask):
     with open(f"./2013/practice_round/bad_horse/data/secret/{subtask}/1.ans") as file:
         answers = file.readlines()
         
-    number_of_test_cases = int(test_data[0])
     test_cases = []
     n = 0
     for line in test_data[1:]:
