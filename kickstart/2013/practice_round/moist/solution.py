@@ -26,22 +26,23 @@ def check(solve, subtask):
     print("Ok")
 
 def solve(cards):
+    # represent the strings as tuples, makes it easy to compare
+    # i. e. (1, 1) < (1, 2)
     scores = []
     for card in cards:
         scores.append(tuple(ord(char) for char in card))
     
-    n = 0
-    i = 0
+    n = 0 # number of operations
+    i = 0 # current index
     while i < len(scores) - 1:
+        #if a card is not in order, find a place for it above and put it there
         if scores[i + 1] < scores[i]:
             value = scores[i + 1]
             j = i
             while j > 0 and value < scores[j]:
                 j -= 1
-            if value > scores[j]:
+            if value > scores[j]: # missing comparison for j = 0
                 j += 1
-            card = cards.pop(i + 1)
-            cards.insert(j, card)
             score = scores.pop(i + 1)
             scores.insert(j, score)
             
