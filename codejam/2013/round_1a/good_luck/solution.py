@@ -12,78 +12,20 @@ def pad(txt, n=30):
     txt = str(txt)
     return txt + " "*(n-len(txt))
 
-def tuple_to_list(counts):
-    return [number for number, count in counts for _ in range(count)]
+def unique_factorizations(N, M):
+    def factorize(n, upper_limit, current_factors, results):
+        for i in range(2, min(upper_limit, n) + 1):
+            if n % i == 0:
+                new_factors = current_factors + [i]
+                next_n = n // i
+                if next_n == 1:
+                    results.append(sorted(new_factors))
+                else:
+                    factorize(next_n, i, new_factors, results)
 
-def add(tuples: set, counter: Counter):
-    t = tuple(sorted((number, count) for number, count in counter.items() if count > 0))
-    tuples.add(t)
-
-def calculate_number_of_reductions(counter: Counter, n):
-    if n == 4:
-        return counter[2] // 2
-    if n == 6:
-        return min(counter[2], counter[3])
-    if n == 8:
-        return (
-            counter[2] // 3,            # 2*2*2=8
-            min(counter[2], counter[4]) # 2*4=8
-        )
-    if n == 9:
-        return counter[3] // 2
-    
-    raise f"n = {n} is not supported"
-
-def reduce_222(counter: Counter, i):
-    counter[2] -= i*3
-    counter[8] += i
-
-def reduce_24(counter: Counter, i):
-    counter[2] -= i
-    counter[4] -= i
-    counter[8] += i
-
-def reduce_primefactors(counter: Counter, subsets: set, n, limit, calc=None):
-    if type(limit) is tuple: # annoying 8
-        reduce_primefactors(counter, subsets, 8, limit[0], reduce_222)
-        reduce_primefactors(counter, subsets, 8, limit[1], reduce_24)
-        return
-
-    for i in range(1, limit+1):
-        _counter = counter.copy()
-        if n == 4:
-            _counter[2] -= i*2
-            _counter[4] += i
-        elif n == 6:
-            _counter[2] -= i
-            _counter[3] -= i
-            _counter[6] += i
-        elif n == 8:
-            calc(_counter, i)
-        elif n == 9:
-            _counter[3] -= i*2
-            _counter[9] += i
-        
-        add(subsets, _counter)
-
-"""
-Returns a set of tuples of tuples ((n_i, k_i)) counting how often the number n_i occurs in the list of numbers
-"""
-def generate_subsets(primefactors, M):
-    subsets = set()
-    primefactor_counter = Counter(primefactors)
-    add(subsets, primefactor_counter)
-
-    prime_products = [4, 6, 8, 9]
-    for prime_product in prime_products:
-        if M < prime_product:
-            break
-        for counter in subsets.copy():
-            counter = Counter(dict(counter))
-            limit = calculate_number_of_reductions(counter, prime_product)
-            reduce_primefactors(counter, subsets, prime_product, limit)
-
-    return subsets
+    results = []
+    factorize(N, M, [], results)
+    return results
 
 def test_subset_generation():
     primefactors = [2, 2, 2, 3, 3, 5]
@@ -98,22 +40,10 @@ def test_subset_generation():
         [2, 2, 3, 5, 6],
         [2, 2, 2, 5, 9]
     ]
-    possible_results_set = set(tuple(sorted(Counter(numbers).items())) for numbers in possible_results)
-    generated_set = generate_subsets(primefactors, 9)
-
-    missing = possible_results_set - generated_set
-    unexpected = generated_set - possible_results_set
-
-    if len(missing) > 0:
-        print("Missing results:")
-        for counts in missing:
-            print(tuple_to_list(counts))
-    elif len(unexpected) > 0:
-        print("Unexpected results:")
-        for counts in unexpected:
-            print(tuple_to_list(counts))
-    else:
-        print("Ok")
+    factorizations = unique_factorizations(np.prod(primefactors), 9)
+    if sorted(possible_results) != sorted(factorizations):
+        raise "Not equal"
+    print("Ok")
 
 def generate_products(N, M, K):
     original = sorted([random.randint(2, M) for _ in range(N)])
@@ -138,11 +68,10 @@ def guess_numbers(N, M, products):
             # this does not tell us anything, ignore
             continue
         
-        primefactors = list(primefac.primefac(product))
-        generated_subsets = generate_subsets(primefactors, M)
+        factorizations = unique_factorizations(product, M)
 
-        for counts in generated_subsets:
-            total_counter += Counter(dict(counts))
+        for factorization in factorizations:
+            total_counter += Counter(factorization)
 
     total_sum = sum(total_counter.values())
 
@@ -169,5 +98,5 @@ def test_guessing(N, M, K, R):
 
     print(f"Guessed correctly {round(correct / R * 100, 1)}% of the time")
     
-#test_subset_generation()
-test_guessing(2, 9, 20, 100)
+test_subset_generation()
+test_guessing(4, 9, 3, 10000)
