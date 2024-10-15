@@ -13,39 +13,6 @@ def pad(txt, n=30):
     txt = str(txt)
     return txt + " "*(n-len(txt))
 
-def factorize(n, upper_limit, current_factors, results):
-    for i in range(2, min(upper_limit, n) + 1):
-        if n % i == 0:
-            new_factors = current_factors + [i]
-            next_n = n // i
-            if next_n == 1:
-                results.append(sorted(new_factors))
-            else:
-                factorize(next_n, i, new_factors, results)
-
-def unique_factorizations(N, M):
-    results = []
-    factorize(N, M, [], results)
-    return results
-
-def test_subset_generation():
-    primefactors = [2, 2, 2, 3, 3, 5]
-    possible_results = [
-        [2, 4, 5, 9],
-        [3, 4, 5, 6],
-        [2, 5, 6, 6],
-        [2, 2, 2, 3, 3, 5],
-        [5, 8, 9],
-        [2, 3, 3, 4, 5],
-        [3, 3, 5, 8],
-        [2, 2, 3, 5, 6],
-        [2, 2, 2, 5, 9]
-    ]
-    factorizations = unique_factorizations(np.prod(primefactors), 9)
-    if sorted(possible_results) != sorted(factorizations):
-        raise "Not equal"
-    print("Ok")
-
 def generate_products(N, M, K):
     original = sorted([random.randint(2, M) for _ in range(N)])
     products = []
