@@ -1,13 +1,9 @@
 import random
 import numpy as np
 from collections import Counter
-from functools import reduce
-from operator import mul
 from math import factorial
 from itertools import combinations_with_replacement, combinations
 
-def multiply_elements(elements):
-    return reduce(mul, elements, 1)
 
 def pad(txt, n=30):
     txt = str(txt)
@@ -37,7 +33,7 @@ def generate_products(N, M, K):
 # N!/(N_2!*N_3!*...*C_M!) / (M - 1)^N
 def initial_probability_of(subset, N, M):
     counter = Counter(subset)
-    demoninator = multiply_elements([(M-1)**N] + [factorial(count) for count in counter.values()])
+    demoninator = np.prod([(M-1)**N] + [factorial(count) for count in counter.values()])
     return factorial(N) / demoninator
 
 def guess_numbers(N, M, K, products):
