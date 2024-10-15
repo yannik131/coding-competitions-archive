@@ -1,30 +1,3 @@
-def check(solve, subtask):
-    with open(f"./2013/practice_round/moist/data/secret/{subtask}/1.in") as file:
-        test_data = file.readlines()
-    with open(f"./2013/practice_round/moist/data/secret/{subtask}/1.ans") as file:
-        answers = file.readlines()
-        
-    test_cases = []
-    n = 0
-    for line in test_data[1:]:
-        if n == 0:
-            n = int(line)
-            test_cases.append([])
-        else:
-            test_cases[-1].append(line.strip())
-            n -= 1
-        
-    for i, answer in enumerate(answers):
-        answer = answer.strip()
-        result = solve(test_cases[i])
-        result = f"Case #{i+1}: {result}"
-        if result != answer:
-            print(f"Test case #{i+1} not handled correctly, expected \"{answer}\", got \"{result}\" instead")
-            print(test_cases[i])
-            return
-    
-    print("Ok")
-
 def solve(cards):
     # represent the strings as tuples, makes it easy to compare
     # i. e. (1, 1) < (1, 2)
@@ -51,6 +24,14 @@ def solve(cards):
 
     return n
 
+def check():
+    T = int(input())
+    for i in range(1, T+1):
+        N = int(input())
+        cards = []
+        for _ in range(N):
+            cards.append(input().strip())
+        result = solve(cards)
+        print(f"Case #{i}: {result}")
 
-check(solve, "subtask1")
-check(solve, "subtask2")
+check()
