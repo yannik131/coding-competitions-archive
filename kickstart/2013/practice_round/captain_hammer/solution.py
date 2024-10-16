@@ -8,7 +8,6 @@ def check(solve, subtask):
         answers = file.readlines()
         
     test_cases = []
-    test_cases = []
     for line in test_data[1:]:
         V, D = line.split()
         test_cases.append([int(V), int(D)])
