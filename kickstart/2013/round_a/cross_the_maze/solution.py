@@ -81,8 +81,6 @@ def solve(maze, x, y, end):
             turned_left = True
             if direction is None:
                 break
-        #print(f"Moved: {solution}\nFacing: {direction}, Pos: ({x}, {y})")
-        #input()
     
     return "Edison ran out of energy."
 
@@ -121,8 +119,6 @@ def check(subtask, solve):
         N -= 1
 
     for i, answer in enumerate(answers):
-        if i < 6:
-            continue
         answer = answer.strip()
         result = solve(test_cases[i][0], *test_cases[i][1])
         result = f"Case #{i+1}: {result}"
