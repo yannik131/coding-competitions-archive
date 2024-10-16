@@ -5,13 +5,6 @@ MOVE_FORWARD_MAP = {
     "S": lambda x, y: (x, y+1)
 }
 
-MOVE_BACKWARD_MAP = {
-    "E": lambda x, y: (x-1, y),
-    "W": lambda x, y: (x+1, y),
-    "N": lambda x, y: (x, y+1),
-    "S": lambda x, y: (x, y-1)
-}
-
 TURN_RIGHT_MAP = {
     "E": "S",
     "S": "W",
