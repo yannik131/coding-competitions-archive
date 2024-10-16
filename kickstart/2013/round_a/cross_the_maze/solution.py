@@ -28,20 +28,20 @@ def left(maze, x, y, direction):
         return '#'
     return maze[y][x]
 
-def can_move_forward(maze, x, y, direction):
+def turn_necessary(maze, x, y, direction):
     if left(maze, x, y, direction) != "#":
-        return False
+        return True
     x, y = MOVE_FORWARD_MAP[direction](x, y)
     if is_out_of_bounds(maze, x, y) or maze[y][x] == "#":
-        return False
-    return True
+        return True
+    return False
 
 def turn(maze, x, y, direction):
     if left(maze, x, y, direction) != "#":
         return TURN_LEFT_MAP[direction]
     
     next_direction = TURN_RIGHT_MAP[direction]
-    while not can_move_forward(maze, x, y, next_direction) and next_direction != direction:
+    while turn_necessary(maze, x, y, next_direction) and next_direction != direction:
         next_direction = TURN_RIGHT_MAP[next_direction]
 
     if next_direction == direction:
@@ -59,22 +59,18 @@ def get_initial_direction(maze, x, y):
 def solve(maze, x, y, end):
     direction = get_initial_direction(maze, x, y)
     solution = ""
-    turned_left = False
     i = 0
     while i < 10000:
-        if turned_left or can_move_forward(maze, x, y, direction):
-            x, y = MOVE_FORWARD_MAP[direction](x, y)
-            solution += direction
-            turned_left = False
-            i += 1
-            if (x, y) == end:
-                return f"{i}\n{solution}"
-        else:
+        if turn_necessary(maze, x, y, direction):
             direction = turn(maze, x, y, direction)
-            turned_left = True
             if direction is None:
                 break
-    
+        x, y = MOVE_FORWARD_MAP[direction](x, y)
+        solution += direction
+        i += 1
+        if (x, y) == end:
+            return f"{i}\n{solution}"
+            
     return "Edison ran out of energy."
 
 
